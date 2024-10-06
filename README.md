@@ -19,6 +19,7 @@ To run the script that demostrates stratigies to reduce hallucination problem in
 
 ```shell
 python3 -m scripts.llm --mode <YOUR-MODE-CHOICE> --device <YOUR-DEVICE-CHOICE>
+```
 
 **mode:**
 - basic
@@ -37,6 +38,7 @@ To run the script that demostrates stratigies to reduce Ghost results in Speech-
 
 ```shell
 python3 -m scripts.stt --source <YOUR-AUDIO-SOURCE-PATH> --mode <YOUR-MODE-CHOICE> --device <YOUR-DEVICE-CHOICE>
+```
 
 **mode:**
 - basic
