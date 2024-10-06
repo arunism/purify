@@ -1,4 +1,4 @@
-from typing import List, Tuple, Optional
+from typing import List, Tuple, Dict, Optional
 
 import torch
 import numpy as np
@@ -13,9 +13,10 @@ class Llama2HallucinationReducer(BaseLM):
     def __init__(
         self,
         model_path: str = "meta-llama/Llama-2-7b-chat-hf",
+        device: Optional[str] = None,
         embedding_model: str = "all-MiniLM-L6-v2",
     ):
-        super().__init__(model_path)
+        super().__init__(model_path, device)
         self.embedder: SentenceTransformer = SentenceTransformer(embedding_model).to(
             self.device
         )
@@ -84,15 +85,62 @@ class Llama2HallucinationReducer(BaseLM):
         )
 
         for i, fact in enumerate(facts):
-            if np.max(similarities[i]) < 0.8:
+            if np.max(similarities[i]) < 0.7:
                 verified_text = verified_text.replace(fact, f"[UNVERIFIED: {fact}]")
 
         return verified_text
 
-    def generate_response(self, query: str) -> str:
-        rag_response = self.retrieval_augmented_generation(query)
-        kg_response = self.knowledge_graph_generation(query)
-        combined_response = f"{rag_response}\n\nAdditional information from knowledge graph:\n{kg_response}"
+    def prompt_engineering(
+        self, query: str, examples: Optional[List[Dict[str, str]]] = None
+    ) -> str:
+        engineered_prompt = (
+            "Please provide an accurate and factual response to the following question. "
+            "If you're unsure about any part of the answer, please indicate your uncertainty. "
+            "Avoid speculation and stick to verified information.\n\n"
+        )
+
+        # Add few-shot examples
+        if examples:
+            for example in self.few_shot_examples:
+                engineered_prompt += (
+                    f"Question: {example['query']}\nAnswer: {example['response']}\n\n"
+                )
+
+        # Add chain-of-thought prompting
+        engineered_prompt += (
+            f"Now, please answer the following question step by step:\n{query}\n"
+            "1. Identify the key elements of the question.\n"
+            "2. Recall relevant facts and information.\n"
+            "3. Reason through the answer logically.\n"
+            "4. Provide a concise and accurate response.\n\n"
+            "Answer: "
+        )
+
+        return engineered_prompt
+
+    def output_calibration(
+        self, response: str, scores: torch.Tensor, confidence_threshold: float = 0.9
+    ) -> str:
+        token_probabilities = scores.softmax(dim=-1).max(dim=-1).values
+        if torch.any(token_probabilities < confidence_threshold):
+            uncertain_response = (
+                "I'm not entirely certain, but based on the information available: "
+                + response
+            )
+            return uncertain_response
+        return response
+
+    def generate_response(
+        self, query: str, examples: Optional[List[Dict[str, str]]] = None
+    ) -> str:
+        engineered_prompt = self.prompt_engineering(query, examples)
+        rag_response, rag_scores = self.retrieval_augmented_generation(
+            engineered_prompt
+        )
+        kg_response, kg_scores = self.knowledge_graph_generation(engineered_prompt)
+        calibrated_rag_response = self.output_calibration(rag_response, rag_scores)
+        calibrated_kg_response = self.output_calibration(kg_response, kg_scores)
+        combined_response = f"{calibrated_rag_response}\n\nAdditional information from knowledge graph:\n{calibrated_kg_response}"
         verified_response = self.fact_verification(combined_response)
         return verified_response
 
