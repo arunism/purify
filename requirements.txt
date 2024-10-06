@@ -1,0 +1,6 @@
+protobuf==5.28.2
+scikit-learn==1.5.2
+sentence-transformers==3.1.1
+sentencepiece==0.2.0
+torch==2.4.1
+transformers==4.45.1
