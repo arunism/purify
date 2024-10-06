@@ -75,9 +75,9 @@ Designing prompts to elicit more accurate responses:
 
 ### Sample Output
 
-[](./artificats/llm/1.png)
-[](./artificats/llm/2.png)
-[](./artificats/llm/3.png)
+![](./artificats/llm/1.png)
+![](./artificats/llm/2.png)
+![](./artificats/llm/3.png)
 
 
 ## Quest 2:  Ghost results in Speech-to-Text
