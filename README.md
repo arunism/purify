@@ -1,6 +1,6 @@
-# AI Engineer Assessment | MustBreak
+# NLP Engineer Assessment
 
-This file includes the documentation to solutions implemented for each of the two quests.
+This file includes the documentation to solutions implemented for each of the two quests mentioned below:
 
 > Due to lack of enough `GPU` on my device currently, all the experiments are implemented on a `CPU` device. So all the results are optimized automatically (realtive to time), when run in a system with enough `GPU` resource.
 
