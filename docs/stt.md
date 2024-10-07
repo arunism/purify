@@ -64,5 +64,5 @@ Implementing a filtering mechanism to retain only the most reliable parts of the
 
 ### Sample Output
 
-![](./artificats/stt/1.png)
-![](./artificats/stt/2.png)
+![](./../artificats/stt/1.png)
+![](./../artificats/stt/2.png)
