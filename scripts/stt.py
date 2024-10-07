@@ -1,18 +1,15 @@
 import os
 import time
 import argparse
-from typing import TypeVar
 
 import torch
 from huggingface_hub import login
 
-from models.base import BaseSpeechToText
 from models.stt import BasicSpeechToText
 from models.optim_stt import GhostReductionSpeechToText
 
 
 login(token=os.environ.get("HF_TOKEN"))
-STTModelType = TypeVar("STTModelType", bound=BaseSpeechToText)
 
 
 models = {
@@ -47,4 +44,4 @@ if __name__ == "__main__":
     parser.add_argument("--device", type=str, default="cpu")
     args = parser.parse_args()
 
-    main(args.audio_path, args.mode, args.device)
+    main(args.source, args.mode, args.device)

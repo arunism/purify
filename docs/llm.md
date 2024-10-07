@@ -75,6 +75,8 @@ Designing prompts to elicit more accurate responses:
 
 ### Sample Output
 
+> REMEMBER: These results are `cpu-based`, the time complexity decreases exponentially when run on `cuda-supported` devices.
+
 ![](./artificats/llm/1.png)
 ![](./artificats/llm/2.png)
 ![](./artificats/llm/3.png)

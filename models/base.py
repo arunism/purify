@@ -59,7 +59,6 @@ class BaseSpeechToText(ABC):
         pass
 
     @staticmethod
-    @torch.jit.script  # JIT compile for faster execution
     def load_audio(audio_path: str) -> Tuple[torch.Tensor, int]:
         audio, sample_rate = sf.read(audio_path, dtype="float32")
         return torch.from_numpy(audio), sample_rate

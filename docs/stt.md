@@ -60,3 +60,9 @@ Implementing a filtering mechanism to retain only the most reliable parts of the
 - **Confidence Thresholding**:
    - The `filter_low_confidence` method systematically removes words that do not meet the confidence threshold, ensuring that the final output is based on reliable predictions.
    - **Contribution**: Directly addresses ghost results by ensuring that low-confidence words do not contaminate the transcription.
+
+
+### Sample Output
+
+![](./artificats/stt/1.png)
+![](./artificats/stt/2.png)

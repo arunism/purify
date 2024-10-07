@@ -1,4 +1,4 @@
-from typing import List, Tuple
+from typing import List, Tuple, Optional
 
 import torch
 from scipy import signal
@@ -8,9 +8,11 @@ from models.base import BaseSpeechToText
 
 
 class GhostReductionSpeechToText(BaseSpeechToText):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, device: Optional[str] = None):
+        super().__init__(device)
         self.confidence_threshold = 0.8
+        # This replacement is Temporary
+        # It can/should be replaced by Language Models
         self.common_replacements = {
             "their": ["there", "they're"],
             "your": ["you're", "yore"],
@@ -30,13 +32,12 @@ class GhostReductionSpeechToText(BaseSpeechToText):
         )
         corrected_transcription = self.apply_language_model(transcription)
         final_transcription = self.filter_low_confidence(
-            corrected_transcription, confidence_scores
+            corrected_transcription, confidence_scores, 0.6
         )
 
         return final_transcription
 
     @staticmethod
-    @torch.jit.script
     def reduce_noise(audio: torch.Tensor, sample_rate: int) -> torch.Tensor:
         nyq = 0.5 * sample_rate
         low = 300 / nyq
@@ -73,6 +74,8 @@ class GhostReductionSpeechToText(BaseSpeechToText):
         return transcription, confidence_scores
 
     def apply_language_model(self, transcription: str) -> str:
+        # This is a simple replacement for not
+        # This can be replaced by Language Models including LLMs
         words = transcription.split()
         for i, word in enumerate(words):
             for correct, alternatives in self.common_replacements.items():
@@ -81,7 +84,6 @@ class GhostReductionSpeechToText(BaseSpeechToText):
         return " ".join(words)
 
     @staticmethod
-    @torch.jit.script
     def filter_low_confidence(
         transcription: str, confidence_scores: List[float], threshold: float
     ) -> str:

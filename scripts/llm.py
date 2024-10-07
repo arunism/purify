@@ -1,17 +1,15 @@
 import os
 import time
 import argparse
-from typing import List, TypeVar
+from typing import List
 
 import torch
 from huggingface_hub import login
 
-from models.base import BaseLM
 from models.llama import BasicLlama2
 from models.optim_llama import Llama2HallucinationReducer
 
 
-BaseLMType = TypeVar("BaseLMType", bound=BaseLM)
 login(token=os.environ.get("HF_TOKEN"))
 
 
