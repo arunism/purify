@@ -1,4 +1,4 @@
-# NLP Engineer Assessment
+# Purify
 
 This file includes the documentation to solutions implemented for each of the two quests mentioned below:
 
