@@ -33,7 +33,9 @@ class BaseLM(ABC):
                 output_scores=True,
                 return_dict_in_generate=True,
             )
-        return self.tokenizer.decode(output[0]), torch.stack(output.scores, dim=1)
+        return self.tokenizer.decode(output.sequences[0]), torch.stack(
+            output.scores, dim=1
+        )
 
 
 class BaseSpeechToText(ABC):
